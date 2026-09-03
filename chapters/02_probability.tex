@@ -1,0 +1,75 @@
+\chapter{Probability and Statistics}
+
+Machine learning models make predictions under uncertainty, and
+probability theory is how that uncertainty is formalized and reasoned
+about.
+
+\section{Random Variables and Distributions}
+
+A random variable $X$ maps outcomes to numbers, and a probability density
+function (PDF) $p(x)$ describes how likely each value is. The most
+important distribution in ML is the Gaussian (normal) distribution:
+
+\[
+  p(x) = \frac{1}{\sigma\sqrt{2\pi}}\, \exp\!\left(-\frac{(x-\mu)^2}{2\sigma^2}\right)
+\]
+
+where $\mu$ is the mean and $\sigma^2$ is the variance.
+
+\figw{gaussian_distributions.png}{0.65}{Gaussian PDFs for different means and variances. A larger $\sigma$ spreads the distribution out; $\mu$ shifts its center.}
+
+\section{Bayes' Theorem}
+
+\begin{definition}[Bayes' Theorem]
+\[
+  P(A\mid B) = \frac{P(B\mid A)\,P(A)}{P(B)}
+\]
+\end{definition}
+
+In ML terms, if $\theta$ represents model parameters and $D$ represents
+observed data:
+\[
+  \underbrace{P(\theta \mid D)}_{\text{posterior}} = \frac{\overbrace{P(D\mid\theta)}^{\text{likelihood}}\ \overbrace{P(\theta)}^{\text{prior}}}{\underbrace{P(D)}_{\text{evidence}}}
+\]
+This is the mathematical basis of Bayesian machine learning: updating a
+prior belief about parameters using observed data to get a posterior
+belief.
+
+\section{Maximum Likelihood Estimation}
+
+\begin{definition}[Likelihood]
+Given data $x_1,\ldots,x_n$ drawn i.i.d.\ from a distribution with unknown
+parameter $\theta$, the likelihood is
+\[
+  \mathcal{L}(\theta) = \prod_{i=1}^n p(x_i \mid \theta).
+\]
+\end{definition}
+
+Maximum Likelihood Estimation (MLE) chooses the parameter $\hat\theta$ that
+makes the observed data most probable:
+\[
+  \hat\theta_{\text{MLE}} = \arg\max_\theta \mathcal{L}(\theta) = \arg\max_\theta \sum_{i=1}^n \log p(x_i\mid\theta)
+\]
+(We maximize the \emph{log}-likelihood instead, since sums are easier to
+differentiate than products, and $\log$ is monotonic so the maximizer is
+unchanged.)
+
+\figw{mle_illustration.png}{0.95}{Left: data sampled from a Gaussian, with the MLE-fitted distribution overlaid. Right: the log-likelihood as a function of $\mu$ — it's maximized exactly at the sample mean.}
+
+\begin{keyidea}
+Minimizing mean-squared-error loss in linear regression is \emph{equivalent}
+to maximum likelihood estimation under the assumption that the residuals
+are Gaussian-distributed. This is why MSE shows up everywhere: it's not an
+arbitrary choice, it falls directly out of a Gaussian noise assumption.
+\end{keyidea}
+
+\section{Cross-Entropy and KL Divergence}
+
+For classification, the cross-entropy between true labels $y$ and
+predicted probabilities $\hat y$ is
+\[
+  H(y,\hat y) = -\sum_i y_i \log \hat y_i,
+\]
+which is exactly the negative log-likelihood of the correct class under the
+model's predicted distribution — this is why cross-entropy loss is the
+standard loss function for classifiers.

@@ -1,0 +1,70 @@
+\chapter{Regression and Classification}
+
+Linear and logistic regression are the simplest ML models, but they
+contain — in miniature — every mathematical idea used by deeper models:
+a parametric function, a loss function, and gradient-based fitting.
+
+\section{Linear Regression}
+
+The model predicts a continuous target as a linear combination of features:
+\[
+  \hat y = \mathbf{w}^\top \mathbf{x} + b.
+\]
+
+\begin{definition}[Mean Squared Error]
+\[
+  J(\mathbf{w}, b) = \frac{1}{n}\sum_{i=1}^n \left(\hat y_i - y_i\right)^2
+\]
+\end{definition}
+
+Because $J$ is convex and quadratic in $\mathbf{w}$, it has a closed-form
+solution — the \textbf{normal equation}:
+\[
+  \mathbf{w}^\star = (X^\top X)^{-1} X^\top \mathbf{y}
+\]
+In practice, gradient descent is often used instead, especially when $X^\top X$
+is large or ill-conditioned to invert directly.
+
+\figw{linear_regression_fit.png}{0.68}{Least-squares fit to noisy data. Gray lines show residuals — the vertical distances MSE penalizes.}
+
+\section{Logistic Regression}
+
+For binary classification, we squash the linear output through a sigmoid
+to get a probability:
+\[
+  \hat y = \sigma(\mathbf{w}^\top\mathbf{x} + b) = \frac{1}{1+e^{-(\mathbf{w}^\top\mathbf{x}+b)}} \in (0,1)
+\]
+
+\begin{definition}[Binary Cross-Entropy Loss]
+\[
+  J(\mathbf{w}, b) = -\frac{1}{n}\sum_{i=1}^n \Big[y_i \log \hat y_i + (1-y_i)\log(1-\hat y_i)\Big]
+\]
+\end{definition}
+
+Unlike linear regression, logistic regression has no closed-form solution
+— $J$ is convex, but nonlinear, so it's fit with gradient descent. The
+gradient turns out to have an elegantly simple form:
+\[
+  \nabla_{\mathbf{w}} J = \frac{1}{n} X^\top (\hat{\mathbf{y}} - \mathbf{y})
+\]
+which looks just like the linear regression gradient, with $\hat y$ now
+being the sigmoid output instead of the raw linear prediction.
+
+\figw{logistic_decision_boundary.png}{0.62}{Logistic regression fit to two Gaussian-distributed classes. Color shows predicted probability $P(y=1\mid x)$; the black curve is the decision boundary at $P=0.5$.}
+
+\section{Regularization}
+
+To prevent overfitting, a penalty on the weights is added to the loss:
+\[
+  J_{\text{reg}}(\mathbf{w}) = J(\mathbf{w}) + \lambda \underbrace{\|\mathbf{w}\|_2^2}_{\text{L2 (Ridge)}}
+  \qquad\text{or}\qquad
+  J_{\text{reg}}(\mathbf{w}) = J(\mathbf{w}) + \lambda \underbrace{\|\mathbf{w}\|_1}_{\text{L1 (Lasso)}}
+\]
+
+\begin{keyidea}
+L2 regularization shrinks weights smoothly toward zero (but rarely exactly
+zero), while L1 regularization tends to push many weights to \emph{exactly}
+zero — producing sparse models that effectively perform feature selection.
+This difference comes directly from the geometry of the $\ell_1$ vs.\
+$\ell_2$ norm balls.
+\end{keyidea}

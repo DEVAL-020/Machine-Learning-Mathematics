@@ -1,0 +1,79 @@
+\chapter{Calculus and Optimization}
+
+Training a model means finding parameters that minimize a loss function.
+Calculus tells us which direction to move in; optimization algorithms tell
+us how to get there efficiently.
+
+\section{Derivatives and Gradients}
+
+\begin{definition}[Gradient]
+For a scalar function $f:\mathbb{R}^n \to \mathbb{R}$, the gradient is the
+vector of partial derivatives
+\[
+  \nabla f(\mathbf{x}) = \left(\frac{\partial f}{\partial x_1}, \ldots, \frac{\partial f}{\partial x_n}\right).
+\]
+\end{definition}
+
+The gradient points in the direction of \emph{steepest ascent} of $f$. To
+minimize a loss function, we move in the direction of $-\nabla f$.
+
+\section{The Chain Rule}
+
+\begin{definition}[Chain Rule]
+If $z = f(y)$ and $y = g(x)$, then
+\[
+  \frac{dz}{dx} = \frac{dz}{dy}\cdot\frac{dy}{dx}.
+\]
+\end{definition}
+
+The chain rule is the mathematical backbone of backpropagation: a neural
+network is a composition of many functions (layers), and computing the
+gradient of the loss with respect to early-layer weights requires
+multiplying together the derivatives of every layer in between.
+
+\section{Gradient Descent}
+
+Given a loss function $J(\theta)$, gradient descent iteratively updates
+parameters:
+\[
+  \theta^{(t+1)} = \theta^{(t)} - \eta\,\nabla J(\theta^{(t)})
+\]
+where $\eta$ is the \textbf{learning rate}, controlling step size.
+
+\figw{gradient_descent_contour.png}{0.68}{Gradient descent path on a convex bowl-shaped loss $J(\theta_1,\theta_2)=\theta_1^2+3\theta_2^2$. Each step moves opposite the gradient, converging toward the minimum.}
+
+\figw{loss_surface_3d.png}{0.75}{The same loss function viewed as a 3D surface, with the descent trajectory rolling downhill toward the minimum.}
+
+\begin{keyidea}
+The learning rate $\eta$ trades off speed and stability. Too small and
+training crawls; too large and updates overshoot the minimum or diverge
+entirely. Elongated, narrow bowls (as in the figure above, where one
+direction is steeper than the other) are exactly why adaptive optimizers
+like Adam and RMSProp were developed — they rescale step sizes per
+parameter.
+\end{keyidea}
+
+\section{Variants of Gradient Descent}
+
+\begin{itemize}[leftmargin=*]
+  \item \textbf{Batch GD:} uses the entire dataset per update — accurate but slow.
+  \item \textbf{Stochastic GD (SGD):} uses one example per update — noisy but fast, and the noise can help escape shallow local minima.
+  \item \textbf{Mini-batch GD:} the standard compromise, updating on small batches (e.g.\ 32–256 examples).
+  \item \textbf{Momentum:} accumulates a moving average of past gradients to smooth out the path and accelerate convergence.
+  \item \textbf{Adam:} combines momentum with a per-parameter adaptive learning rate, and is the default optimizer in most modern deep learning.
+\end{itemize}
+
+\section{Convexity}
+
+\begin{definition}[Convex Function]
+$f$ is convex if for all $\mathbf{x}, \mathbf{y}$ and $t \in [0,1]$,
+\[
+  f(t\mathbf{x} + (1-t)\mathbf{y}) \le t f(\mathbf{x}) + (1-t) f(\mathbf{y}).
+\]
+\end{definition}
+
+For convex loss functions (like linear regression's MSE), gradient descent
+is guaranteed to converge to the \emph{global} minimum. Neural network loss
+surfaces are generally \emph{non}-convex, which is why training deep
+networks well requires careful initialization, learning-rate schedules, and
+architectural choices — there's no guarantee of finding the global optimum.

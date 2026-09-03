@@ -1,0 +1,89 @@
+\chapter{Neural Networks and Backpropagation}
+
+A neural network is a stack of linear transformations separated by
+nonlinear activation functions. Everything from Chapters 1–4 — matrix
+multiplication, the chain rule, gradient descent, cross-entropy loss —
+comes together here.
+
+\section{The Forward Pass}
+
+For a layer $l$, the pre-activation and activation are
+\[
+  \mathbf{z}^{(l)} = W^{(l)}\mathbf{a}^{(l-1)} + \mathbf{b}^{(l)},
+  \qquad
+  \mathbf{a}^{(l)} = \sigma\!\left(\mathbf{z}^{(l)}\right),
+\]
+where $\mathbf{a}^{(0)} = \mathbf{x}$ is the input and $\sigma$ is a
+nonlinear activation function applied elementwise.
+
+\figw{neural_network_diagram.png}{0.92}{A feedforward network: each neuron computes a weighted sum of the previous layer's activations, plus a bias, passed through $\sigma$.}
+
+\section{Activation Functions}
+
+Without a nonlinearity, stacking linear layers would collapse into a
+single linear transformation — $\sigma$ is what gives networks the power
+to approximate complex, non-linear functions.
+
+\figw{activation_functions.png}{0.98}{Common activation functions. Sigmoid and tanh saturate for large $|x|$ (causing vanishing gradients); ReLU and its variants avoid this for positive inputs and are the default choice in modern deep networks.}
+
+\begin{keyidea}
+ReLU's simplicity ($\max(0,x)$) is exactly why it works so well: its
+gradient is either $0$ or $1$, so it doesn't shrink gradients during
+backpropagation the way sigmoid/tanh do when saturated. Leaky ReLU further
+fixes the "dying ReLU" problem by keeping a small gradient for $x<0$.
+\end{keyidea}
+
+\section{The Loss Function}
+
+For classification with $K$ classes, the network outputs are passed
+through a softmax to form a probability distribution:
+\[
+  \hat y_k = \mathrm{softmax}(\mathbf{z})_k = \frac{e^{z_k}}{\sum_{j=1}^K e^{z_j}},
+\]
+and trained with cross-entropy loss, exactly as in Chapter 4.
+
+\section{Backpropagation}
+
+Backpropagation is the chain rule (Chapter 3), applied systematically from
+the output layer back to the input layer, to compute $\partial J/\partial
+W^{(l)}$ for every layer.
+
+Define the \textbf{error signal} at layer $l$ as
+$\boldsymbol\delta^{(l)} = \dfrac{\partial J}{\partial \mathbf{z}^{(l)}}$.
+Then:
+
+\begin{align*}
+  \boldsymbol\delta^{(L)} &= \nabla_{\mathbf{a}^{(L)}} J \odot \sigma'\!\left(\mathbf{z}^{(L)}\right) &&\text{(output layer)}\\[4pt]
+  \boldsymbol\delta^{(l)} &= \left(W^{(l+1)}\right)^{\!\top}\boldsymbol\delta^{(l+1)} \odot \sigma'\!\left(\mathbf{z}^{(l)}\right) &&\text{(hidden layers, propagated backward)}\\[4pt]
+  \frac{\partial J}{\partial W^{(l)}} &= \boldsymbol\delta^{(l)} \left(\mathbf{a}^{(l-1)}\right)^{\!\top} &&\text{(weight gradient)}\\[4pt]
+  \frac{\partial J}{\partial \mathbf{b}^{(l)}} &= \boldsymbol\delta^{(l)} &&\text{(bias gradient)}
+\end{align*}
+
+where $\odot$ denotes elementwise multiplication.
+
+\begin{keyidea}
+Backpropagation is just an efficient bookkeeping trick for the chain rule:
+instead of recomputing derivatives from scratch for every weight, error
+signals $\boldsymbol\delta^{(l)}$ are computed once per layer and reused,
+making training cost roughly proportional to a single forward pass, not
+exponential in network depth.
+\end{keyidea}
+
+Once every $\partial J/\partial W^{(l)}$ is known, ordinary gradient descent
+(Chapter 3) updates each weight matrix:
+\[
+  W^{(l)} \leftarrow W^{(l)} - \eta\,\frac{\partial J}{\partial W^{(l)}}.
+\]
+
+\section{Putting It All Together}
+
+\begin{enumerate}[leftmargin=*]
+  \item \textbf{Linear algebra} (Ch.\,1): every layer is a matrix multiplication.
+  \item \textbf{Probability} (Ch.\,2): the loss is a negative log-likelihood (cross-entropy).
+  \item \textbf{Calculus} (Ch.\,3): gradients are computed via the chain rule and used to descend the loss surface.
+  \item \textbf{Regression} (Ch.\,4): a single neuron with a sigmoid \emph{is} logistic regression — a neural network is many of these, composed and stacked.
+\end{enumerate}
+
+This is the complete mathematical loop that trains every modern deep
+learning model, from a two-layer classifier to a large language model:
+forward pass, loss, backward pass, update — repeated millions of times.

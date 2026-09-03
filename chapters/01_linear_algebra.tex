@@ -1,0 +1,82 @@
+\chapter{Linear Algebra Foundations}
+
+Linear algebra is the language machine learning is written in: data points
+are vectors, datasets are matrices, and models are functions built from
+matrix operations.
+
+\section{Vectors and Vector Operations}
+
+A vector $\mathbf{x} \in \mathbb{R}^n$ is an ordered list of numbers
+$\mathbf{x} = (x_1, x_2, \ldots, x_n)$. In ML, a single data point (e.g.\ a
+row of features) is almost always represented as a vector.
+
+\begin{definition}[Dot Product]
+For $\mathbf{a}, \mathbf{b} \in \mathbb{R}^n$,
+\[
+  \mathbf{a}\cdot\mathbf{b} = \sum_{i=1}^n a_i b_i = \|\mathbf{a}\|\,\|\mathbf{b}\|\cos\theta,
+\]
+where $\theta$ is the angle between the vectors. The dot product measures
+how much two vectors point in the same direction, and underlies operations
+like computing a weighted sum $\mathbf{w}\cdot\mathbf{x}$ in a linear model.
+\end{definition}
+
+\begin{definition}[Vector Projection]
+The projection of $\mathbf{a}$ onto $\mathbf{b}$ is
+\[
+  \mathrm{proj}_{\mathbf{b}}\,\mathbf{a} = \frac{\mathbf{a}\cdot\mathbf{b}}{\mathbf{b}\cdot\mathbf{b}}\,\mathbf{b}.
+\]
+\end{definition}
+
+\figw{vector_projection.png}{0.62}{Projecting $\mathbf{a}$ onto $\mathbf{b}$: the red vector is the component of $\mathbf{a}$ that lies along $\mathbf{b}$.}
+
+\section{Matrices and Matrix Multiplication}
+
+A matrix $A \in \mathbb{R}^{m\times n}$ maps vectors in $\mathbb{R}^n$ to
+vectors in $\mathbb{R}^m$ via $\mathbf{y} = A\mathbf{x}$. Every layer of a
+neural network, at its core, is a matrix multiplication followed by a
+nonlinearity.
+
+\[
+  (A\mathbf{x})_i = \sum_{j=1}^n A_{ij}\,x_j
+\]
+
+\begin{keyidea}
+Matrix multiplication is function composition. Stacking layers
+$\mathbf{h} = A_2\,\sigma(A_1\mathbf{x})$ is how deep networks build up
+complex transformations from simple linear pieces plus nonlinearities.
+\end{keyidea}
+
+\section{Eigenvalues and Eigenvectors}
+
+\begin{definition}[Eigenvector]
+A nonzero vector $\mathbf{v}$ is an eigenvector of a square matrix $A$ with
+eigenvalue $\lambda$ if
+\[
+  A\mathbf{v} = \lambda\mathbf{v}.
+\]
+That is, $A$ only stretches or shrinks $\mathbf{v}$ — it doesn't rotate it
+off its own line.
+\end{definition}
+
+Eigenvectors and eigenvalues reveal the "natural axes" of a linear
+transformation. This is the foundation of Principal Component Analysis
+(PCA): the eigenvectors of a data's covariance matrix point along the
+directions of maximum variance, and their eigenvalues tell you how much
+variance lies along each direction.
+
+\figw{eigenvectors.png}{0.6}{The unit circle transformed by $A$ becomes an ellipse. Eigenvectors are the only directions that don't rotate — they only scale by their eigenvalue $\lambda$.}
+
+\begin{example}[PCA in one line]
+Given centered data matrix $X$, PCA finds the eigenvectors of the
+covariance matrix $\Sigma = \frac{1}{n}X^\top X$. Projecting $X$ onto the
+top-$k$ eigenvectors gives the best $k$-dimensional linear approximation of
+the data (in terms of preserved variance).
+\end{example}
+
+\section{Why This Matters for ML}
+\begin{itemize}[leftmargin=*]
+  \item \textbf{Linear/logistic regression:} predictions are $\mathbf{w}^\top\mathbf{x} + b$.
+  \item \textbf{Neural networks:} each layer is $A\mathbf{x} + \mathbf{b}$ followed by an activation.
+  \item \textbf{PCA / dimensionality reduction:} relies entirely on eigendecomposition.
+  \item \textbf{Word embeddings, attention:} dot products measure similarity between vectors.
+\end{itemize}

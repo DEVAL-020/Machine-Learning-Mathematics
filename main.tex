@@ -1,0 +1,89 @@
+\documentclass[11pt,a4paper]{report}
+
+% ---------- Packages ----------
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{titlesec}
+\usepackage{hyperref}
+\usepackage{fancyhdr}
+\usepackage{enumitem}
+\usepackage[T1]{fontenc}
+\usepackage{booktabs}
+
+% ---------- Colors ----------
+\definecolor{accent}{HTML}{2A5CAA}
+\definecolor{darkgray}{HTML}{333333}
+
+% ---------- Hyperref ----------
+\hypersetup{
+    colorlinks=true,
+    linkcolor=accent,
+    citecolor=accent,
+    urlcolor=accent,
+    pdftitle={Mathematics of Machine Learning},
+    pdfauthor={Deval Patel}
+}
+
+% ---------- Section styling ----------
+\titleformat{\chapter}[display]
+  {\normalfont\huge\bfseries\color{accent}}
+  {\chaptertitlename\ \thechapter}{10pt}{\Huge}
+\titleformat{\section}
+  {\normalfont\Large\bfseries\color{darkgray}}
+  {\thesection}{8pt}{}
+\titleformat{\subsection}
+  {\normalfont\large\bfseries\color{darkgray}}
+  {\thesubsection}{6pt}{}
+
+% ---------- Header/Footer ----------
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\itshape \leftmark}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% ---------- Theorem-like environments ----------
+\newtheorem{definition}{Definition}[chapter]
+\newtheorem{theorem}{Theorem}[chapter]
+\newtheorem{example}{Example}[chapter]
+\newenvironment{keyidea}
+  {\par\medskip\noindent\textbf{\color{accent}Key Idea.}\itshape}
+  {\par\medskip}
+
+% ---------- Figure helper ----------
+\newcommand{\figw}[3]{
+  \begin{figure}[htbp]
+    \centering
+    \includegraphics[width=#2\linewidth]{figures/#1}
+    \caption{#3}
+  \end{figure}
+}
+
+\begin{document}
+
+% ---------- Title page ----------
+\begin{titlepage}
+  \centering
+  \vspace*{2cm}
+  {\Huge\bfseries\color{accent} Mathematics of Machine Learning\par}
+  \vspace{0.5cm}
+  {\Large A Visual Introduction to the Core Math Behind ML\par}
+  \vspace{2cm}
+  {\large Deval Patel\par}
+  \vspace{0.3cm}
+  {\large \today\par}
+  \vfill
+  {\small Compiled with \LaTeX\ \(\cdot\) Figures generated with Python/Matplotlib\par}
+\end{titlepage}
+
+\tableofcontents
+
+\input{chapters/01_linear_algebra}
+\input{chapters/02_probability}
+\input{chapters/03_optimization}
+\input{chapters/04_regression}
+\input{chapters/05_neural_networks}
+
+\end{document}

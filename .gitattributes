@@ -1,0 +1,8 @@
+*.png binary
+*.pdf binary
+
+*.tex text eol=lf
+*.py  text eol=lf
+*.md  text eol=lf
+*.yml text eol=lf
+.gitignore text eol=lf
