@@ -40,7 +40,7 @@ jobs:
           root_file: main.tex
 
       - name: Upload PDF artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: ml-math-notes
           path: main.pdf
