@@ -71,29 +71,6 @@ make pdf
 make install && make all
 ```
 
-Figures are already committed to `figures/`, so you can skip `make figures`
-and just run `make pdf` if you haven't changed any of the generation
-scripts.
-
-## Reproducibility & security
-
-- Python dependencies are version-pinned in `requirements.txt` — CI and
-  local builds install the exact same `numpy`/`matplotlib` versions, and
-  every figure script seeds its randomness, so figures are byte-for-byte
-  reproducible.
-- `.gitattributes` marks `*.png`/`*.pdf` as binary so Windows/macOS/Linux
-  clones can't corrupt them via line-ending conversion.
-- The CI workflow requests only `contents: read` on `GITHUB_TOKEN` (the
-  default is broader read/write) and cancels stale runs automatically.
-- [Dependabot](.github/dependabot.yml) opens monthly update PRs for both
-  the pip and GitHub Actions dependencies.
-
-## Customizing
-
-- **Add a chapter**: create `chapters/06_yourtopic.tex`, add `\input{chapters/06_yourtopic}` in `main.tex`.
-- **Add a figure**: write a new `scripts/gen_*.py` that saves into `figures/`, then reference it with `\figw{yourfigure.png}{width}{caption}` (a helper macro defined in `main.tex`).
-- **Regenerate a single figure**: `python3 scripts/gen_optimization.py`.
-
 ## License
 
 MIT — use it, fork it, teach with it.
