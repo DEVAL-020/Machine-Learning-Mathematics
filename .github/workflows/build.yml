@@ -35,7 +35,7 @@ jobs:
           for f in scripts/gen_*.py; do python "$f"; done
 
       - name: Compile LaTeX
-        uses: xu-cheng/latex-action@v3
+        uses: xu-cheng/latex-action@v4
         with:
           root_file: main.tex
 
