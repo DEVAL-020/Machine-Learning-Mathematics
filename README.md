@@ -4,7 +4,7 @@ A set of visual LaTeX lecture notes covering the core math behind machine
 learning — linear algebra, probability, optimization, regression, and
 neural networks — with every concept illustrated by a generated figure.
 
-📄 **[Read the compiled PDF](main.pdf)**
+
 
 ## Preview
 
